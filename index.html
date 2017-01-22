@@ -33,7 +33,7 @@ console.log(mapbox_dataset_url)
 
 // options: mapbox.streets, mapbox.dark
 const geocoder = L.mapbox.geocoder('mapbox.places'), 
-      map = L.mapbox.map('map', 'mapbox.light')
+      map = L.mapbox.map('map', 'mapbox.streets')
 
 geocoder.query('Melbourne Central, Victoria, Australia', showMap)
 
