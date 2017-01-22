@@ -70,7 +70,11 @@ function showMap(err, data) {
                 // # handlebars ./templates/* -f templates.js -e hbs
                 layer.bindPopup(Handlebars.templates.popup(feature.properties))
             }
-        }).addTo(map)
+        })
+            .on('click', (e) => {
+                map.panTo(e.layer.getLatLng())
+            })
+            .addTo(map)
     })
 }
 </script>
