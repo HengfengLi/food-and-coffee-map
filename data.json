@@ -1,0 +1,23 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Standing Room Coffee",
+        "comment": "Great coffee!",
+        "score": "5/5",
+        "link": "https://www.instagram.com/standingroomcoffee/",
+        "symbol": "cafe"
+      },
+      "geometry": {
+        "coordinates": [
+          144.963134,
+          -37.81083
+        ],
+        "type": "Point"
+      },
+      "id": "f402655274da11d4b008aca857781517"
+    }
+  ],
+  "type": "FeatureCollection"
+}

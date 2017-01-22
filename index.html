@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>A simple map</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
+<script src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.runtime.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+
+<script src='templates.js'></script>
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+// public access token (read-only)
+L.mapbox.accessToken = 'pk.eyJ1IjoiaGVuZ2ZlbmdsaSIsImEiOiJaYjM4TFI4In0.EJIb39MEPO4n6HzG-tJnyw'
+
+const mapbox_username = 'hengfengli'
+const mapbox_dataset_id = 'ciy83u97800562wsxtkkihr8w'
+
+const mapbox_dataset_base_url = 'https://api.mapbox.com/datasets/v1/'
+const mapbox_dataset_url = mapbox_dataset_base_url 
+    + mapbox_username + '/' + mapbox_dataset_id 
+    + '/features?access_token=' + L.mapbox.accessToken
+
+console.log(mapbox_dataset_url)
+
+// options: mapbox.streets, mapbox.dark
+const geocoder = L.mapbox.geocoder('mapbox.places'), 
+      map = L.mapbox.map('map', 'mapbox.light')
+
+geocoder.query('Melbourne Central, Victoria, Australia', showMap)
+
+function showMap(err, data) {
+    // The geocoder can return an area, like a city, or a
+    // point, like an address. Here we handle both cases,
+    // by fitting the map bounds to an area or zooming to a point.
+    console.log(data)
+    if (data.lbounds) {
+        console.log("bounds")
+        console.log(data.lbounds)
+        map.fitBounds(data.lbounds)
+    } else if (data.latlng) {
+        console.log("latlng")
+        console.log(data.latlng)
+        map.setView(data.latlng, 13)
+    }
+    
+    $.get(mapbox_dataset_url, (data) => {
+        console.log(data)
+        
+        L.geoJson(data, {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {
+                    icon: L.mapbox.marker.icon({
+                        'marker-size': 'large',
+                        'marker-symbol': feature.properties.symbol,
+                        'marker-color': '#87CEFA'
+                    })
+                })
+            },
+            onEachFeature: (feature, layer) => {
+                // Run this command to precompile handlebars templates
+                // # handlebars ./templates/* -f templates.js -e hbs
+                layer.bindPopup(Handlebars.templates.popup(feature.properties))
+            }
+        }).addTo(map)
+    })
+}
+</script>
+</body>
+</html>
